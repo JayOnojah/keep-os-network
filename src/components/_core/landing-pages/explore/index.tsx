@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { ChevronDown, ChevronLeft, ChevronRight, Star } from "lucide-react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -11,42 +12,93 @@ import {
     EXPLORE_BUSINESSES,
     EXPLORE_TABS,
     RATING_FILTER_OPTIONS,
+    parseExploreTabId,
     type ExploreTabId,
 } from "./data";
+import AllRating from "./all-rating";
+import ExploreMenu from "./menu";
+import ExploreAmenities from "./amenities";
+import ExploreRoomType from "./room-type";
+import AllFilters from "./all-filters";
 
 const PRICE_MAX = 4500;
-
-function formatNaira(value: number) {
-    return `₦${value.toLocaleString("en-NG")}`;
-}
-
-function RatingStars({ count }: { count: number }) {
-    return (
-        <span className="inline-flex gap-0.5" aria-hidden>
-            {Array.from({ length: 5 }, (_, i) => (
-                <Star
-                    key={i}
-                    className={cn(
-                        "size-3.5",
-                        i < count
-                            ? "fill-amber-400 text-amber-400"
-                            : "fill-neutral-200 text-neutral-200",
-                    )}
-                />
-            ))}
-        </span>
-    );
-}
+const ACTIVE_TAB_PARAM = "activeTab";
 
 export function ExplorePage() {
-    const [activeTab, setActiveTab] = useState<ExploreTabId>("all");
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
+    const activeTab = useMemo(
+        () => parseExploreTabId(searchParams.get(ACTIVE_TAB_PARAM)),
+        [searchParams],
+    );
+
+    const setActiveTab = useCallback(
+        (tab: ExploreTabId) => {
+            const params = new URLSearchParams(searchParams.toString());
+            if (tab === "all") {
+                params.delete(ACTIVE_TAB_PARAM);
+            } else {
+                params.set(ACTIVE_TAB_PARAM, tab);
+            }
+            const query = params.toString();
+            router.push(query ? `${pathname}?${query}` : pathname, {
+                scroll: false,
+            });
+        },
+        [pathname, router, searchParams],
+    );
     const [priceMin, setPriceMin] = useState(0);
     const [priceMax, setPriceMax] = useState(PRICE_MAX);
     const [selectedRatings, setSelectedRatings] = useState<Set<string>>(
         () => new Set(["all"]),
     );
-    const [priceOpen, setPriceOpen] = useState(true);
-    const [ratingsOpen, setRatingsOpen] = useState(true);
+    const [selectedMenus, setSelectedMenus] = useState<Set<string>>(
+        () => new Set(),
+    );
+    const [selectedAmenities, setSelectedAmenities] = useState<Set<string>>(
+        () => new Set(),
+    );
+    const [selectedRoomTypes, setSelectedRoomTypes] = useState<Set<string>>(
+        () => new Set(),
+    );
+
+    function toggleRoomTypeFilter(id: string) {
+        setSelectedRoomTypes((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    }
+
+    function toggleAmenityFilter(id: string) {
+        setSelectedAmenities((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    }
+
+    function toggleMenuFilter(id: string) {
+        setSelectedMenus((prev) => {
+            const next = new Set(prev);
+            if (next.has(id)) {
+                next.delete(id);
+            } else {
+                next.add(id);
+            }
+            return next;
+        });
+    }
 
     function toggleRatingFilter(id: string) {
         setSelectedRatings((prev) => {
@@ -86,17 +138,56 @@ export function ExplorePage() {
             ) {
                 return false;
             }
+            if (
+                activeTab === "restaurants" &&
+                selectedMenus.size > 0 &&
+                !b.menuItems?.some((item) => selectedMenus.has(item))
+            ) {
+                return false;
+            }
+            if (
+                activeTab === "hotels" &&
+                selectedAmenities.size > 0 &&
+                !b.amenities?.some((item) => selectedAmenities.has(item))
+            ) {
+                return false;
+            }
+            if (
+                activeTab === "hotels" &&
+                selectedRoomTypes.size > 0 &&
+                !b.roomTypes?.some((item) => selectedRoomTypes.has(item))
+            ) {
+                return false;
+            }
             return true;
         });
-    }, [activeTab, selectedRatings]);
+    }, [activeTab, selectedRatings, selectedMenus, selectedAmenities, selectedRoomTypes]);
 
     const activeTabMeta = EXPLORE_TABS.find((t) => t.id === activeTab);
     const pageTitle = activeTabMeta?.pageTitle ?? "All Businesses";
+    const showMenuFilter = activeTab === "restaurants";
+    const showHotelsFilters = activeTab === "hotels";
+
+    useEffect(() => {
+        if (!showMenuFilter) {
+            setSelectedMenus(new Set());
+        }
+    }, [showMenuFilter]);
+
+    useEffect(() => {
+        if (!showHotelsFilters) {
+            setSelectedAmenities(new Set());
+            setSelectedRoomTypes(new Set());
+        }
+    }, [showHotelsFilters]);
 
     function clearFilters() {
         setPriceMin(0);
         setPriceMax(PRICE_MAX);
         setSelectedRatings(new Set(["all"]));
+        setSelectedMenus(new Set());
+        setSelectedAmenities(new Set());
+        setSelectedRoomTypes(new Set());
     }
 
     return (
@@ -137,150 +228,37 @@ export function ExplorePage() {
                 <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:gap-10">
                     <aside className="w-full shrink-0 lg:sticky lg:top-20 lg:z-10 lg:max-h-[calc(100dvh-5rem)] lg:w-64 lg:self-start lg:overflow-y-auto xl:w-72">
                         <div className="">
-                            <div className="border border-neutral-200/90 rounded-md py-4">
-                                <div className="flex items-center border-b justify-between px-4 pb-2">
-                                    <h2 className="font-bold text-neutral-900">Filters</h2>
-                                    <button
-                                        type="button"
-                                        onClick={clearFilters}
-                                        className="text-sm font-medium text-primary hover:text-primary/90"
-                                    >
-                                        Clear all
-                                    </button>
-                                </div>
-                                <div className="mt-1 border-neutral-100 px-4">
-                                    <button
-                                        type="button"
-                                        className="flex w-full items-center justify-between text-left font-semibold text-neutral-900"
-                                        onClick={() => setPriceOpen((v) => !v)}
-                                        aria-expanded={priceOpen}
-                                    >
-                                        Price Range
-                                        <ChevronDown
-                                            className={cn(
-                                                "size-4 text-neutral-500 transition-transform",
-                                                priceOpen && "rotate-180",
-                                            )}
-                                        />
-                                    </button>
-                                    {priceOpen ? (
-                                        <div className="mt-4 space-y-4">
-                                            <div className="relative pt-2">
-                                                <div className="relative h-1.5 rounded-full bg-neutral-200">
-                                                    <div
-                                                        className="absolute h-full rounded-full bg-primary"
-                                                        style={{
-                                                            left: `${(priceMin / PRICE_MAX) * 100}%`,
-                                                            right: `${100 - (priceMax / PRICE_MAX) * 100}%`,
-                                                        }}
-                                                    />
-                                                </div>
-                                                <input
-                                                    type="range"
-                                                    min={0}
-                                                    max={PRICE_MAX}
-                                                    value={priceMin}
-                                                    onChange={(e) => {
-                                                        const v = Number(e.target.value);
-                                                        setPriceMin(Math.min(v, priceMax - 100));
-                                                    }}
-                                                    className="pointer-events-none absolute inset-0 h-1.5 w-full appearance-none bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-primary [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-primary"
-                                                    aria-label="Minimum price"
-                                                />
-                                                <input
-                                                    type="range"
-                                                    min={0}
-                                                    max={PRICE_MAX}
-                                                    value={priceMax}
-                                                    onChange={(e) => {
-                                                        const v = Number(e.target.value);
-                                                        setPriceMax(Math.max(v, priceMin + 100));
-                                                    }}
-                                                    className="pointer-events-none absolute inset-0 h-1.5 w-full appearance-none bg-transparent [&::-moz-range-thumb]:pointer-events-auto [&::-moz-range-thumb]:size-4 [&::-moz-range-thumb]:appearance-none [&::-moz-range-thumb]:rounded-full [&::-moz-range-thumb]:border-2 [&::-moz-range-thumb]:border-white [&::-moz-range-thumb]:bg-primary [&::-webkit-slider-thumb]:pointer-events-auto [&::-webkit-slider-thumb]:size-4 [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:bg-primary"
-                                                    aria-label="Maximum price"
-                                                />
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                <label className="block">
-                                                    <span className="mb-1.5 block text-xs text-neutral-500">
-                                                        Min
-                                                    </span>
-                                                    <input
-                                                        type="text"
-                                                        readOnly
-                                                        value={formatNaira(priceMin)}
-                                                        className="w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800"
-                                                    />
-                                                </label>
-                                                <label className="block">
-                                                    <span className="mb-1.5 block text-xs text-neutral-500">
-                                                        Max
-                                                    </span>
-                                                    <input
-                                                        type="text"
-                                                        readOnly
-                                                        value={formatNaira(priceMax)}
-                                                        className="w-full rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-2 text-sm text-neutral-800"
-                                                    />
-                                                </label>
-                                            </div>
-                                        </div>
-                                    ) : null}
-                                </div>
-                            </div>
 
+                            <AllFilters
+                                clearFilters={clearFilters}
+                                priceMin={priceMin}
+                                priceMax={priceMax}
+                                onPriceMinChange={setPriceMin}
+                                onPriceMaxChange={setPriceMax}
+                            />
 
-                            <div className="mt-1 border border-neutral-200/90 rounded-md p-4">
-                                <button
-                                    type="button"
-                                    className="flex w-full items-center justify-between text-left font-semibold text-neutral-900"
-                                    onClick={() => setRatingsOpen((v) => !v)}
-                                    aria-expanded={ratingsOpen}
-                                >
-                                    Ratings
-                                    <ChevronDown
-                                        className={cn(
-                                            "size-4 text-neutral-500 transition-transform",
-                                            ratingsOpen && "rotate-180",
-                                        )}
+                            {showMenuFilter ? (
+                                <ExploreMenu
+                                    selectedMenus={selectedMenus}
+                                    onToggleMenu={toggleMenuFilter}
+                                />
+                            ) : null}
+                            {showHotelsFilters ? (
+                                <>
+                                    <ExploreRoomType
+                                        selectedRoomTypes={selectedRoomTypes}
+                                        onToggleRoomType={toggleRoomTypeFilter}
                                     />
-                                </button>
-                                {ratingsOpen ? (
-                                    <ul className="mt-4 space-y-3">
-                                        {RATING_FILTER_OPTIONS.map((option) => (
-                                            <li key={option.id}>
-                                                <label className="flex cursor-pointer items-center gap-3">
-                                                    <input
-                                                        type="checkbox"
-                                                        checked={selectedRatings.has(
-                                                            option.id,
-                                                        )}
-                                                        onChange={() =>
-                                                            toggleRatingFilter(option.id)
-                                                        }
-                                                        className="size-4 shrink-0 rounded border-neutral-300 accent-primary"
-                                                    />
-                                                    <span className="flex flex-1 items-center gap-2 text-sm text-neutral-700">
-                                                        {option.id === "all" ? (
-                                                            option.label
-                                                        ) : (
-                                                            <>
-                                                                <RatingStars
-                                                                    count={Math.min(
-                                                                        5,
-                                                                        Math.floor(Number(option.id)),
-                                                                    )}
-                                                                />
-                                                                <span>{option.label}</span>
-                                                            </>
-                                                        )}
-                                                    </span>
-                                                </label>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                ) : null}
-                            </div>
+                                    <ExploreAmenities
+                                        selectedAmenities={selectedAmenities}
+                                        onToggleAmenity={toggleAmenityFilter}
+                                    />
+                                </>
+                            ) : null}
+                            <AllRating
+                                selectedRatings={selectedRatings}
+                                onToggleRating={toggleRatingFilter}
+                            />
                         </div>
                     </aside>
 

@@ -17,6 +17,9 @@ export type Business = {
   href: string;
   favorited: boolean;
   footer: FooterState;
+  menuItems?: string[];
+  amenities?: string[];
+  roomTypes?: string[];
 };
 
 export const EXPLORE_TABS = [
@@ -38,12 +41,53 @@ export const EXPLORE_TABS = [
 
 export type ExploreTabId = (typeof EXPLORE_TABS)[number]["id"];
 
+export function parseExploreTabId(
+  value: string | null | undefined,
+): ExploreTabId {
+  if (value && EXPLORE_TABS.some((tab) => tab.id === value)) {
+    return value as ExploreTabId;
+  }
+  return "all";
+}
+
 export const RATING_FILTER_OPTIONS = [
   { id: "all", label: "All" },
   { id: "4.6", label: "4.6 & above", minRating: 4.6 },
   { id: "4.0", label: "4.0 & above", minRating: 4.0 },
   { id: "3.5", label: "3.5 & above", minRating: 3.5 },
   { id: "3.0", label: "3.0 & above", minRating: 3.0 },
+] as const;
+
+export const MENU_FILTER_OPTIONS = [
+  { id: "owo-soup", label: "Owo Soup" },
+  { id: "jollof-rice", label: "Jollof Rice" },
+  { id: "egusi-soup", label: "Egusi Soup" },
+  { id: "pepper-soup", label: "Pepper Soup" },
+  { id: "suya", label: "Suya" },
+  { id: "fried-rice", label: "Fried Rice" },
+  { id: "amala-ewedu", label: "Amala & Ewedu" },
+  { id: "pounded-yam", label: "Pounded Yam" },
+] as const;
+
+export const AMENITIES_FILTER_OPTIONS = [
+  { id: "free-wifi", label: "Free Wifi" },
+  { id: "swimming-pool", label: "Swimming Pool" },
+  { id: "breakfast-included", label: "Breakfast Included" },
+  { id: "gym", label: "Gym" },
+  { id: "free-parking", label: "Free Parking" },
+  { id: "spa", label: "Spa" },
+  { id: "room-service", label: "Room Service" },
+  { id: "airport-shuttle", label: "Airport Shuttle" },
+] as const;
+
+export const ROOM_TYPE_FILTER_OPTIONS = [
+  { id: "deluxe-room", label: "Deluxe Room" },
+  { id: "executive-suite", label: "Executive Suite" },
+  { id: "conference-room", label: "Conference Room" },
+  { id: "presidential-suite", label: "Presidential Suite" },
+  { id: "standard-room", label: "Standard Room" },
+  { id: "family-suite", label: "Family Suite" },
+  { id: "penthouse", label: "Penthouse" },
 ] as const;
 
 export const EXPLORE_BUSINESSES: Business[] = [
@@ -60,6 +104,7 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: false,
     footer: { type: "open", closesAt: "11:00 PM" },
+    menuItems: ["owo-soup", "jollof-rice", "suya", "pepper-soup"],
   },
   {
     id: "2",
@@ -74,6 +119,19 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: true,
     footer: { type: "price", label: "From ₦45,000 / night" },
+    amenities: [
+      "free-wifi",
+      "swimming-pool",
+      "breakfast-included",
+      "gym",
+      "free-parking",
+    ],
+    roomTypes: [
+      "deluxe-room",
+      "executive-suite",
+      "presidential-suite",
+      "penthouse",
+    ],
   },
   {
     id: "3",
@@ -102,6 +160,7 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: false,
     footer: { type: "open", closesAt: "9:30 PM" },
+    menuItems: ["egusi-soup", "jollof-rice", "fried-rice", "pepper-soup"],
   },
   {
     id: "5",
@@ -116,6 +175,8 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: false,
     footer: { type: "closed" },
+    amenities: ["free-wifi", "gym", "free-parking", "room-service"],
+    roomTypes: ["standard-room", "deluxe-room", "executive-suite"],
   },
   {
     id: "6",
@@ -144,6 +205,7 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: false,
     footer: { type: "price", label: "From ₦8,500 / meal" },
+    menuItems: ["owo-soup", "pepper-soup", "amala-ewedu", "pounded-yam"],
   },
   {
     id: "8",
@@ -158,6 +220,19 @@ export const EXPLORE_BUSINESSES: Business[] = [
     href: "#",
     favorited: false,
     footer: { type: "open", closesAt: "12:00 AM" },
+    amenities: [
+      "free-wifi",
+      "breakfast-included",
+      "swimming-pool",
+      "spa",
+      "airport-shuttle",
+    ],
+    roomTypes: [
+      "deluxe-room",
+      "conference-room",
+      "executive-suite",
+      "family-suite",
+    ],
   },
   {
     id: "9",
