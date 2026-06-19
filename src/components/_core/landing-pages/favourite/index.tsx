@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ExploreBusinessCard } from "@/components/_core/landing-pages/explore/business-card";
@@ -21,6 +21,24 @@ export function FavouritesPage() {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(1);
     const favoriteIds = useFavoritesStore((state) => state.ids);
+
+    const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+    const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+    const navRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const activeEl = tabRefs.current[activeTab];
+        const navEl = navRef.current;
+        if (!activeEl || !navEl) return;
+
+        const navRect = navEl.getBoundingClientRect();
+        const tabRect = activeEl.getBoundingClientRect();
+
+        setIndicatorStyle({
+            left: tabRect.left - navRect.left + navEl.scrollLeft,
+            width: tabRect.width,
+        });
+    }, [activeTab]);
 
     const filteredFavourites = useMemo(() => {
         const tab = EXPLORE_TABS.find((entry) => entry.id === activeTab);
@@ -53,28 +71,42 @@ export function FavouritesPage() {
                 className="border-b border-neutral-100 bg-white"
                 aria-label="Favourite categories"
             >
-                <div className="app-width flex justify-center gap-8 overflow-x-auto px-4 pt-4 sm:gap-12 sm:px-6 lg:px-8">
+                <div
+                    ref={navRef}
+                    className="app-width relative flex justify-center gap-8 overflow-x-auto px-4 pt-4 sm:gap-12 sm:px-6 lg:px-8"
+                >
                     {EXPLORE_TABS.map((tab) => (
                         <button
                             key={tab.id}
+                            ref={(el) => { tabRefs.current[tab.id] = el; }}
                             type="button"
                             onClick={() => {
                                 setActiveTab(tab.id);
                                 setPage(1);
                             }}
                             className={cn(
-                                "shrink-0 border-b-2 pb-3 text-sm font-medium transition-colors",
+                                "relative cursor-pointer shrink-0 pb-3 text-sm font-medium transition-colors duration-200",
                                 activeTab === tab.id
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-neutral-500 hover:text-neutral-800",
+                                    ? "text-primary"
+                                    : "text-neutral-500 hover:text-neutral-800",
                             )}
                         >
                             {tab.label}
                         </button>
                     ))}
+
+                    {/* Sliding indicator */}
+                    <span
+                        className="absolute bottom-0 h-0.5 rounded-full bg-primary transition-all duration-300 ease-in-out"
+                        style={{
+                            left: indicatorStyle.left,
+                            width: indicatorStyle.width,
+                        }}
+                    />
                 </div>
             </nav>
 
+            {/* rest of the component unchanged */}
             <div className="app-width px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
                 <div className="flex items-center gap-2">
                     <Link

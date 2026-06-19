@@ -11,6 +11,8 @@ import {
     NAV_LINKS,
 } from "./nav-links";
 import RightNavItems from "./right-nav-items";
+import Image from "next/image";
+import { keepOSLogo } from "@/assets";
 
 export function Navbar() {
     const pathname = usePathname();
@@ -39,20 +41,23 @@ export function Navbar() {
 
     return (
         <header className="sticky top-0 z-50 border-b border-neutral-100 bg-white">
-            <div className="app-width flex h-16 items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center lg:px-8">
+            <div className="app-width flex h-20 items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 md:grid md:grid-cols-[1fr_auto_1fr] md:items-center lg:px-8">
                 <Link
                     href="/"
                     className="flex min-w-0 items-center gap-2 justify-self-start sm:gap-3"
                 >
-                    <div
-                        className="size-9 shrink-0 rounded-full bg-neutral-200 sm:size-10"
+                    <Image
+                        src={keepOSLogo}
+                        alt="KeepOS Logo"
+                        width={117}
+                        height={24}
+                        
                         aria-hidden
                     />
-                    <span className="sr-only">Home</span>
                 </Link>
 
                 <nav
-                    className="hidden items-center justify-center gap-8 text-sm font-medium md:flex"
+                    className="hidden items-center text-base justify-center text-[#020202] gap-8 font-medium md:flex"
                     aria-label="Main"
                 >
                     {NAV_LINKS.map(({ href, label }) => {

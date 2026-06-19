@@ -8,12 +8,13 @@ import {
     ChevronRight,
     MapPin,
     Search,
-    Share2,
     Star,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { shareIcon } from "@/assets";
+import WriteReviewDialog from "@/components/_core/shared/write-review-dialog";
 
 import { HotelBookingModal } from "./book";
 import { getHotelById, type HotelRoom } from "./data";
@@ -105,7 +106,7 @@ export function HotelDetailsPage({ hotelId }: HotelDetailsPageProps) {
                 </nav>
 
                 <div className="mt-8">
-                    <div className="rounded-2xl border border-neutral-200/90 bg-white shadow-sm">
+                    <div className="overflow-hidden rounded-2xl border border-neutral-200/90 bg-white">
                         <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-center sm:p-6">
                             <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-xl sm:aspect-square sm:w-44">
                                 <Image
@@ -121,14 +122,14 @@ export function HotelDetailsPage({ hotelId }: HotelDetailsPageProps) {
                                 <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl">
                                     {hotel.name}
                                 </h1>
-                                <div className="mt-2 flex items-center gap-1.5 text-sm text-neutral-600">
+                                <div className="mt-2 flex items-center gap-1.5 text-sm text-neutral-400">
                                     <MapPin className="size-4 shrink-0 text-neutral-400" />
                                     {hotel.location}
                                 </div>
                                 <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
                                     <span className="inline-flex items-center gap-1 text-neutral-800">
                                         <Star className="size-4 fill-amber-400 text-amber-400" />
-                                        <span className="font-semibold">
+                                        <span className="font-semibold text-amber-400">
                                             {hotel.rating}
                                         </span>
                                         <span className="text-neutral-500">
@@ -137,14 +138,21 @@ export function HotelDetailsPage({ hotelId }: HotelDetailsPageProps) {
                                     </span>
                                 </div>
                                 <div className="mt-5 flex flex-wrap gap-3">
-                                    <Button className="rounded-full px-5">
-                                        Write a Review (Earn KPS)
-                                    </Button>
+                                    <WriteReviewDialog>
+                                        <Button className="rounded-md p-5">
+                                            Write a Review (Earn KPS)
+                                        </Button>
+                                    </WriteReviewDialog>
                                     <Button
                                         variant="outline"
-                                        className="rounded-full px-5"
+                                        className="rounded-md p-5"
                                     >
-                                        <Share2 className="size-4" />
+                                        <Image
+                                            src={shareIcon}
+                                            alt="shareIcon"
+                                            width={20}
+                                            height={20}
+                                        />
                                         Share
                                     </Button>
                                 </div>
@@ -171,7 +179,7 @@ export function HotelDetailsPage({ hotelId }: HotelDetailsPageProps) {
                                             setPage(1);
                                         }}
                                         className={cn(
-                                            "flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
+                                            "flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-7 py-1.5 text-sm font-medium transition-colors",
                                             isActive
                                                 ? "border-primary bg-primary text-primary-foreground"
                                                 : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300",

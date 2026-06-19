@@ -16,7 +16,8 @@ export function QuantityControl({
             <button
                 type="button"
                 onClick={onIncrement}
-                className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm transition-colors hover:bg-primary/90"
+                className="flex size-10 cursor-pointer bg-primary/10 border border-primary text-primary items-center justify-center rounded-full transition-colors"
+                
                 aria-label="Add to order"
             >
                 <Plus className="size-4" />
@@ -29,7 +30,7 @@ export function QuantityControl({
             <button
                 type="button"
                 onClick={onDecrement}
-                className="flex size-7 items-center justify-center rounded-full text-primary transition-colors hover:bg-primary/10"
+                className="flex size-7 cursor-pointer items-center justify-center rounded-full text-neutral-900 transition-colors hover:bg-primary/10"
                 aria-label="Decrease quantity"
             >
                 <Minus className="size-3.5" />
@@ -40,7 +41,7 @@ export function QuantityControl({
             <button
                 type="button"
                 onClick={onIncrement}
-                className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground transition-colors hover:bg-primary/90"
+                className="flex size-7 cursor-pointer hover:bg-primary/10 items-center justify-center rounded-full  text-neutral-900 transition-colors"
                 aria-label="Increase quantity"
             >
                 <Plus className="size-3.5" />

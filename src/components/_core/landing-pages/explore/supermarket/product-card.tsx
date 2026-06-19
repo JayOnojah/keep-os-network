@@ -26,14 +26,14 @@ export function ProductCard({
                     className="object-cover"
                 />
             </div>
-            <div className="flex flex-1 flex-col gap-3 p-4">
+            <div className="flex justify-between items-end flex-1 gap-3 p-4">
                 <div>
-                    <h3 className="font-bold text-neutral-900">{product.name}</h3>
+                    <h3 className="font-bold text-neutral-900 whitespace-nowrap">{product.name}</h3>
                     <p className="mt-1 text-sm font-semibold text-neutral-800">
                         {formatProductPrice(product.price)}
                     </p>
                 </div>
-                <div className="mt-auto flex justify-end">
+                <div className="">
                     <QuantityControl
                         quantity={quantity}
                         onDecrement={() =>

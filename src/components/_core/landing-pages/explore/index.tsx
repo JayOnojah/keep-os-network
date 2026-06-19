@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
@@ -28,6 +28,11 @@ export function ExplorePage() {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
+
+    const tabRefs = useRef<Record<string, HTMLButtonElement | null>>({});
+    const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
+    const navRef = useRef<HTMLDivElement>(null);
+    const [page, setPage] = useState(1);
 
     const activeTab = useMemo(
         () => parseExploreTabId(searchParams.get(ACTIVE_TAB_PARAM)),
@@ -181,6 +186,20 @@ export function ExplorePage() {
         }
     }, [showHotelsFilters]);
 
+    useEffect(() => {
+        const activeEl = tabRefs.current[activeTab];
+        const navEl = navRef.current;
+        if (!activeEl || !navEl) return;
+
+        const navRect = navEl.getBoundingClientRect();
+        const tabRect = activeEl.getBoundingClientRect();
+
+        setIndicatorStyle({
+            left: tabRect.left - navRect.left + navEl.scrollLeft,
+            width: tabRect.width,
+        });
+    }, [activeTab]);
+
     function clearFilters() {
         setPriceMin(0);
         setPriceMax(PRICE_MAX);
@@ -193,25 +212,41 @@ export function ExplorePage() {
     return (
         <div className="min-h-screen bg-white">
             <nav
-                className="border-b border-neutral-100"
-                aria-label="Business categories"
+                className="border-b border-neutral-100 bg-white"
+                aria-label="Favourite categories"
             >
-                <div className="app-width flex justify-center gap-8 overflow-x-auto px-4 pt-4 sm:gap-12 sm:px-6 lg:px-8">
+                <div
+                    ref={navRef}
+                    className="app-width relative flex justify-center gap-8 overflow-x-auto px-4 pt-4 sm:gap-12 sm:px-6 lg:px-8"
+                >
                     {EXPLORE_TABS.map((tab) => (
                         <button
                             key={tab.id}
+                            ref={(el) => { tabRefs.current[tab.id] = el; }}
                             type="button"
-                            onClick={() => setActiveTab(tab.id)}
+                            onClick={() => {
+                                setActiveTab(tab.id);
+                                setPage(1);
+                            }}
                             className={cn(
-                                "shrink-0 border-b-2 pb-3 text-sm font-medium transition-colors",
+                                "relative cursor-pointer shrink-0 pb-3 text-sm font-medium transition-colors duration-200",
                                 activeTab === tab.id
-                                    ? "border-primary text-primary"
-                                    : "border-transparent text-neutral-500 hover:text-neutral-800",
+                                    ? "text-primary"
+                                    : "text-neutral-500 hover:text-neutral-800",
                             )}
                         >
                             {tab.label}
                         </button>
                     ))}
+
+                    {/* Sliding indicator */}
+                    <span
+                        className="absolute bottom-0 h-0.5 rounded-full bg-primary transition-all duration-300 ease-in-out"
+                        style={{
+                            left: indicatorStyle.left,
+                            width: indicatorStyle.width,
+                        }}
+                    />
                 </div>
             </nav>
 

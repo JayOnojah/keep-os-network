@@ -20,7 +20,7 @@ export default function RightNavItems({
     <div className="flex items-center justify-self-end gap-1 sm:gap-2 md:gap-3">
       <div className="hidden items-center gap-1.5 rounded-full border border-primary/40 bg-primary/12 px-3 py-1.5 text-xs font-semibold text-primary md:flex">
         <GemSvg />
-        <span className="whitespace-nowrap">4,958 KPS</span>
+        <span className="whitespace-nowrap text-[#171819]">4,958 KPS</span>
       </div>
       <Link
         href="/favourite"
@@ -32,14 +32,14 @@ export default function RightNavItems({
       <Button
         variant="ghost"
         size="sm"
-        className="hidden md:inline-flex"
+        className="hidden md:inline-flex border border-[#E1E1E1] px-4 h-[44px] rounded-lg font-medium text-[#020202] text-base"
         asChild
       >
         <Link href="/explore/auth/login">Login</Link>
       </Button>
       <Button
         size="sm"
-        className="hidden h-9 rounded-lg bg-primary px-3 font-semibold text-primary-foreground shadow-sm hover:bg-primary/90 sm:inline-flex sm:px-4"
+        className="hidden h-[44px] rounded-lg bg-primary px-4 font-medium text-primary-foreground text-base sm:inline-flex sm:px-4"
         asChild
       >
         <Link href="/explore/auth/register">Sign Up</Link>

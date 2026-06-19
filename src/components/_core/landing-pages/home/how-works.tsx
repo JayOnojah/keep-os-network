@@ -48,7 +48,7 @@ const STEPS: Step[] = [
 
 function StepCard({ title, description, imageSrc, imageAlt }: Step) {
   return (
-    <article className="flex flex-col items-center rounded-2xl border border-neutral-200/90 bg-white px-5 py-5 text-center shadow-sm sm:px-6">
+    <article className="flex flex-col items-center rounded-2xl border border-neutral-200/90 bg-white px-5 py-5 text-center sm:px-6">
       <h3 className="text-lg font-bold text-neutral-900 sm:text-xl">{title}</h3>
       <div className="relative mt-6 h-16 w-full max-w-55 overflow-hidden rounded-full sm:mt-8  sm:max-w-60">
         <Image
@@ -69,7 +69,7 @@ function StepCard({ title, description, imageSrc, imageAlt }: Step) {
 export function HowItWorks() {
   return (
     <section className="bg-white px-4 py-14 sm:px-6 sm:py-16 lg:px-8 lg:py-20">
-      <div className="mx-auto max-w-7xl">
+      <div className="mx-auto max-w-7xl mt-190 md:mt-110 lg:mt-30">
         <h2 className="text-center text-2xl font-bold tracking-tight text-neutral-900 sm:text-3xl">
           How It Works
         </h2>

@@ -1,10 +1,14 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Hotel, ShoppingCart, UtensilsCrossed } from "lucide-react";
+import { ArrowRight, Hotel } from "lucide-react";
+import {
+    houseIcon,
+    folderOpenIcon,
+    shoppingCartIcon
+} from "@/assets";
+import { StaticImageData } from "next/image";
 
 import { cn } from "@/lib/utils";
-
-type IconComponent = typeof Hotel;
 
 type Category = {
     title: string;
@@ -13,7 +17,7 @@ type Category = {
     href: string;
     imageSrc: string;
     imageAlt: string;
-    icon: IconComponent;
+    icon: StaticImageData;
     bg: string;
     border: string;
     accent: string;
@@ -29,11 +33,11 @@ const CATEGORIES: Category[] = [
         imageSrc:
             "/images/pngs/landing-pages/shop-by-categories/hotels.png",
         imageAlt: "Modern hotel room with a comfortable bed",
-        icon: Hotel,
+        icon: houseIcon,
         bg: "bg-[#f3f4ff]",
-    border: "border-primary/40",
-    accent: "text-primary",
-    iconColor: "text-primary",
+        border: "border-primary",
+        accent: "text-primary",
+        iconColor: "text-primary",
     },
     {
         title: "Restaurants",
@@ -43,9 +47,9 @@ const CATEGORIES: Category[] = [
         imageSrc:
             "/images/pngs/landing-pages/shop-by-categories/restaurants.png",
         imageAlt: "Plated meal with wine at a restaurant",
-        icon: UtensilsCrossed,
+        icon: folderOpenIcon,
         bg: "bg-[#fff7ed]",
-        border: "border-[#ea580c]/35",
+        border: "border-[#F88203]",
         accent: "text-[#ea580c]",
         iconColor: "text-[#ea580c]",
     },
@@ -57,9 +61,9 @@ const CATEGORIES: Category[] = [
         imageSrc:
             "/images/pngs/landing-pages/shop-by-categories/supermarkets.png",
         imageAlt: "Supermarket aisle with fresh produce",
-        icon: ShoppingCart,
+        icon: shoppingCartIcon,
         bg: "bg-[#f0fdf4]",
-        border: "border-[#16a34a]/35",
+        border: "border-[#0D914D]",
         accent: "text-[#16a34a]",
         iconColor: "text-[#16a34a]",
     },
@@ -76,22 +80,22 @@ function CategoryCard({
     bg,
     border,
     accent,
-    iconColor,
 }: Category) {
     return (
         <Link
             href={href}
             className={cn(
-                "group flex flex-col overflow-hidden rounded-2xl border-2 transition-shadow hover:shadow-md sm:flex-row sm:items-center justify-between",
+                "group flex flex-col overflow-hidden rounded-2xl border transition-shadow hover:shadow-md sm:flex-row sm:items-center sm:justify-between",
                 bg,
                 border,
             )}
         >
-            <div className="flex flex-1 flex-row items-start gap-4 p-5 sm:min-h-44 sm:items-start sm:gap-5 sm:px-6 sm:py-6">
-                <div className="flex size-12 shrink-0 items-center justify-center rounded-full border border-neutral-100 bg-white shadow-sm sm:size-14">
-                    <Icon className={cn("size-6 sm:size-7", iconColor)} strokeWidth={1.75} />
-                </div>
-                <div className="min-w-0 flex-1 h-full flex flex-col justify-between">
+            {/* Text content */}
+            <div className="flex flex-col gap-3 p-5 sm:min-h-44 sm:justify-between sm:px-6 sm:py-6">
+                <div className="flex items-start gap-4">
+                    <div className="flex size-12 shrink-0 items-center justify-center rounded-full border border-neutral-100 bg-white sm:size-14">
+                        <Image src={Icon} alt="" className="size-6" aria-hidden />
+                    </div>
                     <div>
                         <h3 className="text-sm font-bold tracking-tight text-neutral-900">
                             {title}
@@ -100,28 +104,30 @@ function CategoryCard({
                             {description}
                         </p>
                     </div>
-                    <span
-                        className={cn(
-                            "mt-4 inline-flex items-center gap-0.5 text-xs font-semibold",
-                            accent,
-                        )}
-                    >
-                        {cta}
-                        <ArrowRight
-                            className="size-4 transition-transform group-hover:translate-x-0.5"
-                            aria-hidden
-                        />
-                    </span>
                 </div>
+                <span
+                    className={cn(
+                        "inline-flex items-center gap-0.5 text-xs font-semibold",
+                        accent,
+                    )}
+                >
+                    {cta}
+                    <ArrowRight
+                        className="size-4 transition-transform group-hover:translate-x-0.5"
+                        aria-hidden
+                    />
+                </span>
             </div>
-            <div className="pr-5">
+
+            {/* Image — full width on mobile, fixed size on desktop */}
+            <div className="px-4 pb-4 sm:px-0 sm:pb-0 sm:pr-5">
                 <Image
                     src={imageSrc}
                     alt={imageAlt}
                     height={122}
                     width={142}
-                    sizes="w-[141px] h-[126px] rounded-2xl"
-                    className="object-cover"
+                    sizes="(max-width: 640px) 100vw, 142px"
+                    className="w-full rounded-xl object-cover sm:w-[142px] sm:rounded-2xl"
                 />
             </div>
         </Link>

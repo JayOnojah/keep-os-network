@@ -3,6 +3,9 @@
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
 import { ChevronDown, Heart, MapPin, Menu, Search, X } from "lucide-react";
+import Image from "next/image";
+
+import { keepOSLogo } from "@/assets";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -10,6 +13,14 @@ import { cn } from "@/lib/utils";
 import { GemSvg } from "../svg";
 import MobileDrawer from "./mobile-drawer";
 import RightNavItems from "./right-nav-items";
+
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 import { NAV_LINKS } from "./nav-links";
 
@@ -25,42 +36,33 @@ const inputFieldClass =
 const desktopFieldClass =
     "flex h-11 items-center gap-2 rounded-xl bg-[#f0f2ff] px-3 text-sm text-neutral-800";
 
+
 function CitySelect({
-    id,
     className,
-    defaultCity = "",
+    defaultCity,
 }: {
-    id: string;
     className?: string;
     defaultCity?: string;
 }) {
     return (
-        <div className={cn("relative flex items-center gap-2", className)}>
-            <MapPin className="size-4 shrink-0 text-neutral-500" aria-hidden />
-            <label htmlFor={id} className="sr-only">
-                City
-            </label>
-            <select
-                id={id}
-                defaultValue={defaultCity}
-                className="min-w-0 flex-1 cursor-pointer appearance-none bg-transparent pr-6 font-medium text-neutral-800 outline-none"
+        <Select defaultValue={defaultCity}>
+            <SelectTrigger
+                className={cn(
+                    "border-none bg-transparent rounded-lg! md:w-47.5! w-full shadow-none outline-none gap-0 p-0 h-10!",
+                    className,
+                )}
             >
-                {!defaultCity ? (
-                    <option value="" disabled>
-                        Select City
-                    </option>
-                ) : null}
+                <MapPin className="size-4 shrink-0 text-neutral-500 mr-2" aria-hidden />
+                <SelectValue placeholder="Select City" />
+            </SelectTrigger>
+            <SelectContent>
                 {CITIES.map(({ value, label }) => (
-                    <option key={value} value={value}>
+                    <SelectItem key={value} value={value}>
                         {label}
-                    </option>
+                    </SelectItem>
                 ))}
-            </select>
-            <ChevronDown
-                className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2 text-neutral-500"
-                aria-hidden
-            />
-        </div>
+            </SelectContent>
+        </Select>
     );
 }
 
@@ -114,18 +116,25 @@ export function ExploreNav() {
     }, []);
 
     return (
-        <header className="sticky top-0 z-40 border-b border-neutral-100 bg-white">
+        <header className="sticky top-0 z-40 border-b bg-white border-neutral-100 ">
             <div className="md:hidden">
                 <div className="bg-[#eef2ff]">
                     <div className="app-width px-4 py-3">
                         <div className="flex items-center gap-3">
-                            <Link href="/" className="shrink-0" aria-label="Home">
-                                <div
-                                    className="size-10 rounded-full bg-neutral-200"
+
+                            <Link
+                                href="/"
+                                className="flex min-w-0 items-center gap-2 justify-self-start sm:gap-3"
+                            >
+                                <Image
+                                    src={keepOSLogo}
+                                    alt="KeepOS Logo"
+                                    width={117}
+                                    height={24}
+
                                     aria-hidden
                                 />
                             </Link>
-
                             <div className="flex min-w-0 flex-1 justify-center">
                                 <div className="flex items-center gap-1.5 rounded-full border border-primary/40 bg-primary/12 px-3 py-1.5 text-xs font-semibold text-primary">
                                     <GemSvg />
@@ -165,7 +174,7 @@ export function ExploreNav() {
                 <div className="h-30">
                     <div className="app-width -mt-16 h-20 md:bg-white bg-[#eef2ff] px-4 pb-3">
                         <div className="rounded-2xl border border-neutral-100 bg-white p-3 shadow-sm">
-                            <CitySelect id="explore-city-mobile" className={inputFieldClass} />
+                            <CitySelect className={inputFieldClass} />
                             <SearchInput
                                 id="explore-search-mobile"
                                 className={cn(inputFieldClass, "mt-2")}
@@ -177,19 +186,22 @@ export function ExploreNav() {
 
             <div className="app-width hidden px-6 py-4 md:block lg:px-8">
                 <div className="flex items-center gap-4">
-                    <Link href="/" className="shrink-0" aria-label="Home">
-                        <div
-                            className="size-10 rounded-full bg-neutral-200"
+                    <Link
+                        href="/"
+                        className="flex min-w-0 items-center gap-2 justify-self-start sm:gap-3"
+                    >
+                        <Image
+                            src={keepOSLogo}
+                            alt="KeepOS Logo"
+                            width={117}
+                            height={24}
+
                             aria-hidden
                         />
                     </Link>
 
                     <div className="flex min-w-0 flex-1 items-center gap-4">
-                        <CitySelect
-                            id="explore-city-desktop"
-                            className={cn(desktopFieldClass, "w-36 shrink-0")}
-                            defaultCity="abuja"
-                        />
+                        <CitySelect className={cn(desktopFieldClass, "w-36 shrink-0")} defaultCity="abuja" />
                         <SearchInput
                             id="explore-search-desktop"
                             className={cn(desktopFieldClass, "min-w-0 flex-1 px-4")}
