@@ -110,7 +110,7 @@ export function EarnRedeemSave() {
           <div className="mt-8 flex justify-center">
             <Button
               asChild
-              className="rounded-xl bg-primary px-8 font-semibold text-primary-foreground shadow-sm hover:bg-primary/90"
+              className="rounded-md bg-primary px-8 h-12 font-semibold text-primary-foreground hover:bg-primary/90"
             >
               <Link href="#">Browse All Businesses</Link>
             </Button>

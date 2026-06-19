@@ -21,22 +21,16 @@ export type SupermarketDetail = Business & {
     products: SupermarketProduct[];
 };
 
-const PRODUCT_IMAGE =
-    "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80";
+const SUPERMARKET_CATEGORY_IMAGE =
+    "/images/pngs/landing-pages/shop-by-categories/supermarkets.png";
 
 const CATEGORY_IMAGES: Record<string, string> = {
-    "fresh-produce":
-        "https://images.unsplash.com/photo-1610832958501-7ee272c42d6b?auto=format&fit=crop&w=80&q=80",
-    beverages:
-        "https://images.unsplash.com/photo-1625772299848-391b6aabe137?auto=format&fit=crop&w=80&q=80",
-    household:
-        "https://images.unsplash.com/photo-1585421514287-efb74aae4b2d?auto=format&fit=crop&w=80&q=80",
-    snacks:
-        "https://images.unsplash.com/photo-1621939514649-cee3549115c4?auto=format&fit=crop&w=80&q=80",
-    "frozen-foods":
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=80&q=80",
-    bakery:
-        "https://images.unsplash.com/photo-1509440155596-9c225381d26a?auto=format&fit=crop&w=80&q=80",
+    "fresh-produce": SUPERMARKET_CATEGORY_IMAGE,
+    beverages: SUPERMARKET_CATEGORY_IMAGE,
+    household: SUPERMARKET_CATEGORY_IMAGE,
+    snacks: SUPERMARKET_CATEGORY_IMAGE,
+    "frozen-foods": SUPERMARKET_CATEGORY_IMAGE,
+    bakery: SUPERMARKET_CATEGORY_IMAGE,
 };
 
 const CATEGORY_LABELS: Record<string, string> = {

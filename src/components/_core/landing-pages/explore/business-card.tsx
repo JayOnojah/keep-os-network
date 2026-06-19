@@ -10,20 +10,22 @@ import type { Business, FooterState } from "./data";
 function CardFooter({ footer }: { footer: FooterState }) {
   if (footer.type === "open") {
     return (
-      <p className="text-sm font-medium text-primary">
+      <p className="inline-block rounded-full bg-[#EEF2FF] px-2 py-1 text-sm text-primary">
         Open • Closes {footer.closesAt}
       </p>
     );
   }
   if (footer.type === "closed") {
     return (
-      <span className="inline-flex rounded-full bg-red-500/10 px-2.5 py-1 text-xs font-semibold text-red-600">
+      <span className="inline-flex rounded-full bg-red-500/10 px-2 py-0.5 text-sm text-red-600">
         Closed
       </span>
     );
   }
   return (
-    <p className="text-sm font-medium text-primary">{footer.label}</p>
+    <p className="inline-block rounded-full bg-[#EEF2FF] px-2 py-1 text-sm font-medium text-primary">
+      {footer.label}
+    </p>
   );
 }
 
@@ -89,7 +91,7 @@ export function ExploreBusinessCard({ business }: { business: Business }) {
               className="size-3.5 shrink-0 fill-amber-400 text-amber-400"
               aria-hidden
             />
-            <span className="font-medium">{rating}</span>
+            <span className="font-medium text-amber-400">{rating}</span>
             <span className="text-neutral-400">({reviewCount})</span>
           </div>
           <div className="flex items-start gap-1.5 text-sm text-neutral-500">

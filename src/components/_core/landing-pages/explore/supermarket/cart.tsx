@@ -1,7 +1,9 @@
 import Image from "next/image";
-import { Minus, Plus, ShoppingCart, Trash2 } from "lucide-react";
+import { Minus, Plus, Trash2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { shopingCartFullIcon } from "@/assets";
+import CheckoutFlowDialog from "@/components/_core/shared/checkout-flow-dialog";
 
 import {
     formatProductPrice,
@@ -12,6 +14,7 @@ import {
 const VAT_RATE = 0.075;
 
 type CartProps = {
+    businessName: string;
     cartCount: number;
     products: SupermarketProduct[];
     quantities: Record<string, number>;
@@ -108,6 +111,7 @@ function CartItemCard({
 }
 
 export default function Cart({
+    businessName,
     cartCount,
     products,
     quantities,
@@ -125,18 +129,19 @@ export default function Cart({
 
     return (
         <aside className="flex w-full shrink-0 flex-col lg:sticky lg:top-24 lg:w-80 lg:max-h-[calc(100vh-6rem)]">
-            <div className="flex max-h-[min(70vh,40rem)] min-h-0 flex-col overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-sm lg:max-h-full lg:flex-1">
+            <div className="flex max-h-[min(70vh,40rem)] min-h-0 flex-col overflow-hidden rounded-2xl border border-neutral-200/90 bg-white lg:max-h-full lg:flex-1">
                 <div className="shrink-0 px-6 pt-6">
-                    <h2 className="text-lg font-bold text-neutral-900">
-                        Your Orders
-                    </h2>
+                    {cartCount > 0 ? (
+                        <h2 className="text-lg font-bold text-neutral-900">
+                            Your Orders
+                        </h2>
+                    ) : null}
                 </div>
 
                 {cartCount === 0 ? (
-                    <div className="flex flex-col items-center px-6 py-10 text-center">
-                        <div className="flex size-16 items-center justify-center rounded-full bg-neutral-100 text-neutral-400">
-                            <ShoppingCart className="size-7" />
-                        </div>
+                    <div className="flex flex-col items-center px-6 py-50 text-center">
+                        <Image src={shopingCartFullIcon} alt="Shopping Cart Full"  width={64}  height={64} />
+                        <h2 className="mt-4 text-lg font-bold text-neutral-900">Your Orders</h2>
                         <p className="mt-4 text-sm leading-relaxed text-neutral-500">
                             When you add products from a store, they will appear
                             here
@@ -200,12 +205,21 @@ export default function Cart({
                                 </dl>
                             </section>
 
-                            <Button
-                                type="button"
-                                className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+                            <CheckoutFlowDialog
+                                itemCount={cartCount}
+                                businessName={businessName}
+                                subtotal={subtotal}
+                                vat={vat}
+                                total={total}
+                                formatPrice={formatProductPrice}
                             >
-                                Place Order
-                            </Button>
+                                <Button
+                                    type="button"
+                                    className="mt-6 h-12 w-full rounded-xl text-base font-semibold"
+                                >
+                                    Place Order
+                                </Button>
+                            </CheckoutFlowDialog>
                         </div>
                     </div>
                 )}

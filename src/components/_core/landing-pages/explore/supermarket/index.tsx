@@ -8,15 +8,16 @@ import {
     ChevronRight,
     MapPin,
     Search,
-    Share2,
     SlidersHorizontal,
     Star,
 } from "lucide-react";
 
 import Reviews from "@/components/_core/shared/reviews";
+import WriteReviewDialog from "@/components/_core/shared/write-review-dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useSupermarketCart } from "@/store/supermarket-cart-store";
+import { shareIcon } from "@/assets";
 
 import Cart from "./cart";
 import { getSupermarketById, getSupermarketStatus } from "./data";
@@ -84,7 +85,7 @@ export function SupermarketDetailsPage({
                             </Link>
                         </li>
                         <li aria-hidden className="text-neutral-300">
-                            &gt;
+                            <ChevronRight className="size-4" aria-hidden />
                         </li>
                         <li>
                             <Link
@@ -94,8 +95,8 @@ export function SupermarketDetailsPage({
                                 Supermarkets
                             </Link>
                         </li>
-                        <li aria-hidden className="text-neutral-300">
-                            &gt;
+                        <li aria-hidden className="tex-neutral-900">
+                            <ChevronRight className="size-4" aria-hidden />
                         </li>
                         <li className="font-medium text-neutral-900">
                             {supermarket.name}
@@ -105,7 +106,7 @@ export function SupermarketDetailsPage({
 
                 <div className="mt-8 flex flex-col gap-8 lg:flex-row lg:items-start lg:gap-10">
                     <div className="flex-1">
-                        <div className="overflow-hidden rounded-2xl border border-neutral-200/90 bg-white shadow-sm">
+                        <div className="overflow-hidden rounded-2xl border border-neutral-200/90 bg-white">
                             <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-center sm:p-6">
                                 <div className="relative aspect-4/3 w-full shrink-0 overflow-hidden rounded-xl sm:aspect-square sm:w-44">
                                     <Image
@@ -121,14 +122,14 @@ export function SupermarketDetailsPage({
                                     <h1 className="text-xl font-bold text-neutral-900 sm:text-2xl">
                                         {supermarket.name}
                                     </h1>
-                                    <div className="mt-2 flex items-center gap-1.5 text-sm text-neutral-600">
+                                    <div className="mt-2 flex items-center gap-1.5 text-sm text-neutral-400">
                                         <MapPin className="size-4 shrink-0 text-neutral-400" />
                                         {supermarket.location}
                                     </div>
                                     <div className="mt-2 flex flex-wrap items-center gap-3 text-sm">
                                         <span className="inline-flex items-center gap-1 text-neutral-800">
                                             <Star className="size-4 fill-amber-400 text-amber-400" />
-                                            <span className="font-semibold">
+                                            <span className="font-semibold text-amber-400">
                                                 {supermarket.rating}
                                             </span>
                                             <span className="text-neutral-500">
@@ -139,22 +140,24 @@ export function SupermarketDetailsPage({
                                             className={cn(
                                                 "font-medium",
                                                 status.isOpen
-                                                    ? "text-primary"
-                                                    : "text-red-600",
+                                                    ? "text-primary bg-primary/10 px-2 py-0.5 rounded-full"
+                                                    : "text-red-600 bg-red-100 px-2 py-0.5 rounded-full",
                                             )}
                                         >
                                             {status.label}
                                         </span>
                                     </div>
                                     <div className="mt-5 flex flex-wrap gap-3">
-                                        <Button className="rounded-full px-5">
-                                            Write a Review (Earn KPS)
-                                        </Button>
+                                        <WriteReviewDialog>
+                                            <Button className="rounded-md p-5">
+                                                Write a Review (Earn KPS)
+                                            </Button>
+                                        </WriteReviewDialog>
                                         <Button
                                             variant="outline"
-                                            className="rounded-full px-5"
+                                            className="rounded-md p-5"
                                         >
-                                            <Share2 className="size-4" />
+                                            <Image src={shareIcon} alt='shareIcon' width={20} height={20} />
                                             Share
                                         </Button>
                                     </div>
@@ -163,45 +166,44 @@ export function SupermarketDetailsPage({
                         </div>
 
                         <div className="mt-5 min-w-0 flex-1">
-                            <div
-                                className="flex gap-2 overflow-x-auto pb-1"
-                                role="tablist"
-                                aria-label="Product categories"
-                            >
-                                {supermarket.categories.map((category) => {
-                                    const isActive =
-                                        activeCategory === category.id;
-                                    return (
-                                        <button
-                                            key={category.id}
-                                            type="button"
-                                            role="tab"
-                                            aria-selected={isActive}
-                                            onClick={() =>
-                                                setActiveCategory(category.id)
-                                            }
-                                            className={cn(
-                                                "flex shrink-0 items-center gap-2 rounded-full border px-3 py-2 text-sm font-medium transition-colors",
-                                                isActive
-                                                    ? "border-primary bg-primary text-primary-foreground"
-                                                    : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300",
-                                            )}
-                                        >
-                                            {category.id !== "all" ? (
-                                                <span className="relative size-7 overflow-hidden rounded-full">
-                                                    <Image
-                                                        src={category.imageSrc}
-                                                        alt=""
-                                                        fill
-                                                        sizes="28px"
-                                                        className="object-cover"
-                                                    />
-                                                </span>
-                                            ) : null}
-                                            {category.label}
-                                        </button>
-                                    );
-                                })}
+                            <div className="w-0 min-w-full overflow-hidden">
+                                <div
+                                    className="flex gap-3 overflow-x-auto pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                                    role="tablist"
+                                    aria-label="Product categories"
+                                >
+                                    {supermarket.categories.map((category) => {
+                                        const isActive = activeCategory === category.id;
+                                        return (
+                                            <button
+                                                key={category.id}
+                                                type="button"
+                                                role="tab"
+                                                aria-selected={isActive}
+                                                onClick={() => setActiveCategory(category.id)}
+                                                className={cn(
+                                                    "flex shrink-0 cursor-pointer items-center gap-2 rounded-full border px-4 py-1.5 text-sm font-medium whitespace-nowrap transition-colors",
+                                                    isActive
+                                                        ? "border-primary bg-primary text-primary-foreground"
+                                                        : "border-neutral-200 bg-white text-neutral-700 hover:border-neutral-300",
+                                                )}
+                                            >
+                                                {category.id !== "all" ? (
+                                                    <span className="relative size-7 overflow-hidden rounded-full">
+                                                        <Image
+                                                            src={category.imageSrc}
+                                                            alt=""
+                                                            fill
+                                                            sizes="28px"
+                                                            className="object-cover"
+                                                        />
+                                                    </span>
+                                                ) : null}
+                                                {category.label}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
                             </div>
 
                             <div className="mt-5 flex gap-3">
@@ -289,6 +291,7 @@ export function SupermarketDetailsPage({
                     </div>
 
                     <Cart
+                        businessName={supermarket.name}
                         cartCount={cartCount}
                         products={supermarket.products}
                         quantities={quantities}

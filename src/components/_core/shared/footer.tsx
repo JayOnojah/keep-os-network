@@ -1,5 +1,8 @@
 import type { ReactNode, SVGProps } from "react";
 import { X } from "lucide-react";
+import Image from "next/image";
+import { keepOSLogo } from "@/assets";
+import Link from "next/link";
 
 function IconFacebook(props: SVGProps<SVGSVGElement>) {
   return (
@@ -63,7 +66,7 @@ function LinkColumn({
   links: readonly { readonly label: string; readonly href: string }[];
 }) {
   return (
-    <div className="min-w-0 lg:border-l lg:border-neutral-200 lg:pl-10">
+    <div className="min-w-0 lg:border-l lg:border-[#C0C9EA] lg:pl-10">
       <h3 className="text-sm font-bold text-neutral-900">{title}</h3>
       <ul className="mt-4 space-y-3">
         {links.map(({ label, href }) => (
@@ -83,14 +86,23 @@ function LinkColumn({
 
 export function Footer() {
   return (
-    <footer className="border-t border-neutral-200/80 bg-[#f0f2ff]">
+    <footer className="bg-[#f0f2ff]">
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-10 lg:grid-cols-4 lg:gap-0">
-          <div className="border-b border-neutral-200 pb-10 lg:border-b-0 lg:pb-0 lg:pr-10">
-            <div
-              className="size-12 rounded-full bg-neutral-200"
-              aria-hidden
-            />
+          <div className="border-b border-[#C0C9EA] pb-10 lg:border-b-0 lg:pb-0 lg:pr-10">
+            <Link
+              href="/"
+              className="flex min-w-0 items-center gap-2 justify-self-start sm:gap-3"
+            >
+              <Image
+                src={keepOSLogo}
+                alt="KeepOS Logo"
+                width={117}
+                height={24}
+
+                aria-hidden
+              />
+            </Link>
             <p className="mt-5 max-w-xs text-sm leading-relaxed text-neutral-600">
               Discover trusted hotels, restaurants, and supermarkets near you.
               Earn points. Get rewards.
@@ -114,16 +126,16 @@ export function Footer() {
           <LinkColumn title="Support" links={SUPPORT_LINKS} />
         </div>
 
-        <div className="mt-12 border-t border-neutral-200 pt-8">
+        <div className="mt-12 border-t border-[#C0C9EA] pt-8">
           <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center text-sm text-neutral-600">
             <span>© 2026 KeepOS.network. All rights reserved.</span>
             <span
-              className="hidden h-3 w-px shrink-0 bg-neutral-300 sm:block"
+              className="hidden h-3 w-px shrink-0 bg-[#C0C9EA] sm:block"
               aria-hidden
             />
             <span>Built for local businesses.</span>
             <span
-              className="hidden h-3 w-px shrink-0 bg-neutral-300 sm:block"
+              className="hidden h-3 w-px shrink-0 bg-[#C0C9EA] sm:block"
               aria-hidden
             />
             <span>Secure Payments</span>
