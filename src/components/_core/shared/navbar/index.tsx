@@ -49,9 +49,9 @@ export function Navbar() {
                     <Image
                         src={keepOSLogo}
                         alt="KeepOS Logo"
-                        width={117}
-                        height={24}
-                        
+                        height={32}
+                        width={155}
+
                         aria-hidden
                     />
                 </Link>

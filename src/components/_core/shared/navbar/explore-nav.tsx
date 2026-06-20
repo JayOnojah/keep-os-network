@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useId, useState } from "react";
-import { ChevronDown, Heart, MapPin, Menu, Search, X } from "lucide-react";
+import { Heart, MapPin, Menu, Search, X } from "lucide-react";
 import Image from "next/image";
 
 import { keepOSLogo } from "@/assets";
@@ -129,8 +129,8 @@ export function ExploreNav() {
                                 <Image
                                     src={keepOSLogo}
                                     alt="KeepOS Logo"
-                                    width={117}
-                                    height={24}
+                                    height={32}
+                                    width={155}
 
                                     aria-hidden
                                 />
@@ -193,8 +193,8 @@ export function ExploreNav() {
                         <Image
                             src={keepOSLogo}
                             alt="KeepOS Logo"
-                            width={117}
-                            height={24}
+                            height={32}
+                            width={155}
 
                             aria-hidden
                         />
