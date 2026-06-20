@@ -19,7 +19,6 @@ type MobileDrawerProps = {
     setOpen: (open: boolean) => void;
     panelId: string;
     navLinks: readonly NavLink[];
-    /** Tailwind top offset classes for fixed overlay/panel (default: below main navbar) */
     topOffset?: string;
 };
 
